@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    
+    {% if page == "login" %}
+        <div>
+            <form method="POST">
+                {% csrf_token %}
+                <label for="user">Username: </label><br/>
+                <input type="text" id="user" name="user"><br/>
+                <label for="pass">Password: </label><br/>
+                <input type="password" id="pass" name="pass"><br/>
+
+                <a href="register/">Create an account?</a>
+                <input type="submit" value="Login">
+            </form>
+        </div>
+    {% else %}
+        <div>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <a href="login/">Have an account?</a>
+                <input type="submit" value="Create Account">
+            </form>
+        </div>
+    {% endif %}
+
+</body>
+</html>
