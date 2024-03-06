@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>{{ page }}</title>
 </head>
 <body>
 
@@ -16,7 +16,7 @@
         </ul>
     {% endif %}
     
-    {% if page == "login" %}
+    {% if page == "Login" %}
         <div>
             <form method="POST">
                 {% csrf_token %}
@@ -25,7 +25,7 @@
                 <label for="pass">Password: </label><br/>
                 <input type="password" id="pass" name="pass"><br/>
 
-                <a href="register/">Create an account?</a>
+                <a href="{% url 'register' %}">Create an account?</a>
                 <input type="submit" value="Login">
             </form>
         </div>
@@ -35,7 +35,7 @@
                 {% csrf_token %}
                 {{ form.as_p }}
 
-                <a href="login/">Have an account?</a>
+                <a href="{% url 'login' %}">Have an account?</a>
                 <input type="submit" value="Create Account">
             </form>
         </div>
