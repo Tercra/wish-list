@@ -5,12 +5,26 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from .models import Group
+from .forms import GroupForm
 
 # Create your views here.
 @login_required(login_url="/login")
 def home(request):
+    groups = Group.objects.filter(user=request.user)
+    gForm = GroupForm(initial={"user" : request.user})
+
     template = loader.get_template("mainPage.html")
-    context = {"user" : request.user}
+    context = {"user" : request.user, "groups" : groups, "gForm" : gForm}
+    return HttpResponse(template.render(context=context, request=request))
+
+@login_required(login_url="/login")
+def groupView(request, id, name):
+    groups = Group.objects.filter(user=request.user)
+    gForm = GroupForm(initial={"user" : request.user})
+
+    template = loader.get_template("groupPage.html")
+    context = {"name" : name, "groups" : groups, "gForm" : gForm}
     return HttpResponse(template.render(context=context, request=request))
 
 def loginView(request):
@@ -52,3 +66,20 @@ def register(request):
     template = loader.get_template('loginRegister.html')
     context = {"page" : "Register", "form" : form}
     return HttpResponse(template.render(context=context, request=request))
+
+# Jobs/requests
+def createGroupView(request):
+    if(not request.user.is_authenticated):
+        return redirect("home")
+
+    if(request.method == "POST"):
+        form = GroupForm(request.POST)
+
+        if(form.is_valid()):
+            group = form.save()
+            return redirect("group", id=group.id, name=group.name)
+        else:
+            for err in form.errors:
+                messages.error(request, form.errors[err])
+
+    return redirect("home")

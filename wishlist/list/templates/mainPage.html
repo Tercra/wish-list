@@ -7,12 +7,40 @@
     <title>Home</title>
 </head>
 <body>
-    <div id="userDiv">
-        <h1>{{ user }}</h1>
-        <menu id="userOptions">
-            <li><a href="{% url 'logout' %}">Logout</a></li>
-        </menu>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div id="sidebar">
+        <div id="userDiv">
+            <h1>{{ user }}</h1>
+            <menu id="userOptions">
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </menu>
+        </div>
         
+        <h2>Groups | <button>Create</button></h2>
+        <nav>
+            <ul>
+                {% for g in groups %}
+                    <li><a href="{% url 'group' g.id g.name %}">{{ g.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+
+    <div class="popup">
+        <!-- Creating a form for creating groups -->
+        <form action="{% url 'createGroup' %}" method="POST">
+            {% csrf_token %}
+            {{ gForm.as_p }}
+            
+            <input type="submit" value="Create Group">
+        </form>
     </div>
 </body>
 </html>

@@ -6,4 +6,6 @@ urlpatterns = [
     path("login/", views.loginView, name="login"),
     path("logout/", views.logoutView, name="logout"),
     path("register/", views.register, name="register"),
+    path("group/<int:id>/<str:name>", views.groupView, name="group"),
+    path("createGroup/", views.createGroupView, name="createGroup"),
 ]
