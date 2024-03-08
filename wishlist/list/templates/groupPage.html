@@ -1,2 +1,12 @@
 {% include "mainPage.html" %}
-<h1>{{ name }}</h1>
+
+<div>
+    <h1>{{ name }}</h1>
+    <menu>
+        <form method="POST" action="{% url 'deleteGroup' %}"><li>
+            {% csrf_token %}
+            <input type="hidden" value="{{ id }}" name="groupId">
+            <input type="submit" value="Delete Group">
+        </li></form>
+    </menu>
+</div>

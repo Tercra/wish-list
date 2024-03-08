@@ -8,4 +8,5 @@ urlpatterns = [
     path("register/", views.register, name="register"),
     path("group/<int:id>/<str:name>", views.groupView, name="group"),
     path("createGroup/", views.createGroupView, name="createGroup"),
+    path("deleteGroup/", views.deleteGroupView, name="deleteGroup"),
 ]

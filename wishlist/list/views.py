@@ -24,7 +24,7 @@ def groupView(request, id, name):
     gForm = GroupForm(initial={"user" : request.user})
 
     template = loader.get_template("groupPage.html")
-    context = {"name" : name, "groups" : groups, "gForm" : gForm}
+    context = {"name" : name, "id" : id, "groups" : groups, "gForm" : gForm}
     return HttpResponse(template.render(context=context, request=request))
 
 def loginView(request):
@@ -82,4 +82,17 @@ def createGroupView(request):
             for err in form.errors:
                 messages.error(request, form.errors[err])
 
+    return redirect("home")
+
+def deleteGroupView(request):
+    if(not request.user.is_authenticated):
+        return redirect("home")
+
+    if(request.method=="POST"):
+        try:
+            id = request.POST.get("groupId")
+            g = Group.objects.get(pk = id)
+            g.delete()
+        except Exception as e:
+            print(e)
     return redirect("home")
