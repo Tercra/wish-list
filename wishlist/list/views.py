@@ -1,3 +1,4 @@
+from http.client import HTTPResponse
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
@@ -5,8 +6,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from .models import Group
+from .models import Group, Item, ItemData
 from .forms import GroupForm
+from .productInfo import scrapeInfo
+from django.conf import settings
+import os
 
 # Create your views here.
 @login_required(login_url="/login")
@@ -15,16 +19,17 @@ def home(request):
     gForm = GroupForm(initial={"user" : request.user})
 
     template = loader.get_template("mainPage.html")
-    context = {"user" : request.user, "groups" : groups, "gForm" : gForm}
+    context = {"MEDIA_URL": settings.MEDIA_URL, "user" : request.user, "groups" : groups, "gForm" : gForm}
     return HttpResponse(template.render(context=context, request=request))
 
 @login_required(login_url="/login")
 def groupView(request, id, name):
     groups = Group.objects.filter(user=request.user)
     gForm = GroupForm(initial={"user" : request.user})
+    items = Item.objects.filter(group__id=id)
 
     template = loader.get_template("groupPage.html")
-    context = {"name" : name, "id" : id, "groups" : groups, "gForm" : gForm}
+    context = {"MEDIA_URL": settings.MEDIA_URL, "name" : name, "id" : id, "groups" : groups, "gForm" : gForm, "items" : items}
     return HttpResponse(template.render(context=context, request=request))
 
 def loginView(request):
@@ -67,10 +72,10 @@ def register(request):
     context = {"page" : "Register", "form" : form}
     return HttpResponse(template.render(context=context, request=request))
 
-# Jobs/requests
+# Handles creating a group
 def createGroupView(request):
     if(not request.user.is_authenticated):
-        return redirect("home")
+        return redirect("login")
 
     if(request.method == "POST"):
         form = GroupForm(request.POST)
@@ -84,9 +89,10 @@ def createGroupView(request):
 
     return redirect("home")
 
+# Handles Deleting a group
 def deleteGroupView(request):
     if(not request.user.is_authenticated):
-        return redirect("home")
+        return redirect("login")
 
     if(request.method=="POST"):
         try:
@@ -95,4 +101,29 @@ def deleteGroupView(request):
             g.delete()
         except Exception as e:
             print(e)
+    return redirect("home")
+
+# Handles the addition of a new item
+def addItemView(request):
+    if(not request.user.is_authenticated):
+        return redirect("login")
+
+    if(request.method=="POST"):
+        url = request.POST.get("url")
+        groupId = request.POST.get("groupId")
+        groupName = request.POST.get("groupName")
+        temp = scrapeInfo(url)
+        if(temp["success"] == True):
+            temp = temp["res"]
+
+            item = Item.objects.create(user=request.user, group_id=groupId, name=temp["name"], imagePath=temp["img"])
+            # item.save()
+            itemData = ItemData(item=item, price=temp["price"], currency=temp["currency"], inStock=temp["inStock"], webLink=temp["url"])
+            itemData.save()
+        else:
+            messages.error(request, temp["msg"])
+
+        return redirect("group", id=groupId, name=groupName)
+
+
     return redirect("home")

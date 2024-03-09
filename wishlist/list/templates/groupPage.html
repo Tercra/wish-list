@@ -9,4 +9,21 @@
             <input type="submit" value="Delete Group">
         </li></form>
     </menu>
+
+    <form method="POST" action="{% url 'addItem' %}">
+        {% csrf_token %}
+        <input type="hidden" value="{{ id }}" name="groupId">
+        <input type="hidden" value="{{ name }}" name="groupName">
+        
+        <label for="url">URL: </label><br/>
+        <input type="text" name="url" placeholder="URL of the item you wish to add" autocomplete="off">
+        <input type="submit" value="Add item">
+    </form>
+
+    {% for i in items %}
+        <div class="item">
+            <img src="{{ MEDIA_URL }}{{ i.imagePath }}" />
+            <p>{{ i.name }}</p>
+        </div>
+    {% endfor %}
 </div>
