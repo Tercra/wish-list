@@ -138,7 +138,15 @@ def deleteItemsView(request):
         groupName = request.POST.get("groupName")
         selectedItems = request.POST.getlist("selectedItems")
         items = Item.objects.filter(pk__in=selectedItems)
+        images = [x["imagePath"] for x in items.values()]
         items.delete()
+
+        # Delete images of items that do not use that image path anymore
+        other = [x["imagePath"] for x in Item.objects.filter(imagePath__in=images).values()]
+        other = set(images).difference(other)
+        for o in other:
+            os.remove(os.path.join(settings.MEDIA_ROOT, o))
+            
 
         return redirect("group", id=groupId, name=groupName)
 
