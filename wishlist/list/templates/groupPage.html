@@ -20,10 +20,18 @@
         <input type="submit" value="Add item">
     </form>
 
-    {% for i in items %}
-        <div class="item">
-            <img src="{{ MEDIA_URL }}{{ i.imagePath }}" />
-            <p>{{ i.name }}</p>
-        </div>
-    {% endfor %}
+    <form method="POST" action="{% url 'deleteItems' %}">
+        {% csrf_token %}
+        <input type="hidden" value="{{ id }}" name="groupId">
+        <input type="hidden" value="{{ name }}" name="groupName">
+
+        <input type="submit" value="Delete"/>
+        {% for i in items %}
+            <div class="item">
+                <input type="checkbox" name="selectedItems" value="{{ i.id }}"><br/>
+                <img src="{{ MEDIA_URL }}{{ i.imagePath }}" />
+                <p><label for="selectedItems">{{ i.name }}</label></p>
+            </div>
+        {% endfor %}
+    </form>
 </div>

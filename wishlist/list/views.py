@@ -127,3 +127,19 @@ def addItemView(request):
 
 
     return redirect("home")
+
+# Handles the deletion of an item
+def deleteItemsView(request):
+    if(not request.user.is_authenticated):
+        return redirect("login")
+    
+    if(request.method=="POST"):
+        groupId = request.POST.get("groupId")
+        groupName = request.POST.get("groupName")
+        selectedItems = request.POST.getlist("selectedItems")
+        items = Item.objects.filter(pk__in=selectedItems)
+        items.delete()
+
+        return redirect("group", id=groupId, name=groupName)
+
+    return redirect("home")
