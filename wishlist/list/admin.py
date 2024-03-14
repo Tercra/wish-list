@@ -8,7 +8,7 @@ class ItemAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "group", "name", "imagePath",)
 
 class ItemDataAdmin(admin.ModelAdmin):
-    list_display = ("id", "item", "price", "currency", "inStock", "webLink")
+    list_display = ("id", "item", "price", "currency", "inStock", "webLink", "origin")
 
 # Register your models here.
 admin.site.register(Group, GroupAdmin)

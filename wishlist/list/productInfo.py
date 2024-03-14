@@ -487,7 +487,10 @@ def bookwalkerScrape(html):
     res["price"] = float(info["offers"][0]["price"])
     res["currency"] = info["offers"][0]["priceCurrency"]
     res["inStock"] = True
-    res["image"] = info["image"]
+    # res["image"] = info["image"]
+    soup = BeautifulSoup(html, "html.parser", parse_only=SoupStrainer("img"))
+    imgURL = soup.find("img", itemprop="image")["src"]
+    res["img"] = saveImage(res["name"], imgURL)
 
     res["origin"] = "BookWalker"
 

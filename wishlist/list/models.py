@@ -9,13 +9,14 @@ class Group(models.Model):
 
 class Item(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="items")
     name = models.CharField(max_length=255)
     imagePath = models.CharField(max_length=255)
 
 class ItemData(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="idatas")
     price = models.DecimalField(max_digits= 10, decimal_places=2)
     currency = models.CharField(max_length=3)
     inStock = models.BooleanField()
     webLink = models.CharField(max_length=255)
+    origin = models.CharField(max_length=255)

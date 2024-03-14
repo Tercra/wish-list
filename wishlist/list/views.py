@@ -126,7 +126,7 @@ def addItemView(request):
 
             item = Item.objects.create(user=request.user, group_id=groupId, name=temp["name"], imagePath=temp["img"])
             # item.save()
-            itemData = ItemData(item=item, price=temp["price"], currency=temp["currency"], inStock=temp["inStock"], webLink=temp["url"])
+            itemData = ItemData(item=item, price=temp["price"], currency=temp["currency"], inStock=temp["inStock"], webLink=temp["url"], origin=temp["origin"])
             itemData.save()
         else:
             messages.error(request, temp["msg"])
