@@ -41,6 +41,7 @@ IMAGE_DIR = settings.MEDIA_ROOT
 rep = re.compile(r"[/\\]")
 delete = re.compile(r"[#%&{}<>*?/$!'\":@+`|= ]")
 
+# (maybeChangeInProduction)
 def saveImage(name, url):
     img = requestURL(url)["req"].content
     # Sanitize the name as it might contain characters that cause problems

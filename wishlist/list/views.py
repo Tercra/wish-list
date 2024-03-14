@@ -97,8 +97,16 @@ def deleteGroupView(request):
     if(request.method=="POST"):
         try:
             id = request.POST.get("groupId")
+            images = [x["imagePath"] for x in Item.objects.filter(group=id).values()]
             g = Group.objects.get(pk = id)
             g.delete()
+
+            # Delete images of items that do not use that image path anymore (maybeChangeInProduction)
+            other = [x["imagePath"] for x in Item.objects.filter(imagePath__in=images).values()]
+            other = set(images).difference(other)
+            for o in other:
+                os.remove(os.path.join(settings.MEDIA_ROOT, o))
+
         except Exception as e:
             print(e)
     return redirect("home")
@@ -141,7 +149,7 @@ def deleteItemsView(request):
         images = [x["imagePath"] for x in items.values()]
         items.delete()
 
-        # Delete images of items that do not use that image path anymore
+        # Delete images of items that do not use that image path anymore (maybeChangeInProduction)
         other = [x["imagePath"] for x in Item.objects.filter(imagePath__in=images).values()]
         other = set(images).difference(other)
         for o in other:
