@@ -27,10 +27,21 @@ def home(request):
 def groupView(request, id, name):
     groups = Group.objects.filter(user=request.user)
     gForm = GroupForm(initial={"user" : request.user})
-    items = Item.objects.filter(group__id=id)
+    items = Item.objects.filter(group__pk=id)
 
     template = loader.get_template("groupPage.html")
     context = {"MEDIA_URL": settings.MEDIA_URL, "name" : name, "id" : id, "groups" : groups, "gForm" : gForm, "items" : items}
+    return HttpResponse(template.render(context=context, request=request))
+
+@login_required(login_url="/login")
+def itemView(request, id):
+    groups = Group.objects.filter(user=request.user)
+    gForm = GroupForm(initial={"user" : request.user})
+    item = Item.objects.get(pk=id)
+    itemDatas = ItemData.objects.filter(item__pk=id)
+
+    template = loader.get_template("itemPage.html")
+    context = {"MEDIA_URL": settings.MEDIA_URL, "id" : id, "groups" : groups, "gForm" : gForm, "item" : item, "itemDatas" : itemDatas}
     return HttpResponse(template.render(context=context, request=request))
 
 def loginView(request):

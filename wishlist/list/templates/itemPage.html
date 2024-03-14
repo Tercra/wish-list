@@ -1,0 +1,20 @@
+{% include 'mainPage.html' %}
+
+<div class="itemDetail">
+    <h1>{{ item.name }}</h1>
+    <img src="{{ MEDIA_URL }}{{ item.imagePath }}"/>
+    <table>
+        <tr>
+            <th>Site</th><th>Price</th><th>Currency</th><th>In Stock</th><th>Link</th>
+        </tr>
+        {% for i in itemDatas %}
+            <tr>
+                <td>{{ i.origin }}</td>
+                <td>{{ i.price }}</td>
+                <td>{{ i.currency }}</td>
+                <td>{{ i.inStock }}</td>
+                <td><a class="tableLink" href="{{ i.webLink }}" target="_blank">Go-></a></td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>

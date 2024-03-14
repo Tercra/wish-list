@@ -39,7 +39,7 @@
             <div class="item">
                 <input type="checkbox" name="selectedItems" value="{{ i.id }}"><br/>
                 <img src="{{ MEDIA_URL }}{{ i.imagePath }}" />
-                <p><label for="selectedItems">{{ i.name }}</label></p>
+                <p><label for="selectedItems"><a href="{% url 'itemPage' i.id %}">{{ i.name }}</a></label></p>
             </div>
         {% endfor %}
     </form>
