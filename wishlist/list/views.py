@@ -1,4 +1,5 @@
 from http.client import HTTPResponse
+import re
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
@@ -157,5 +158,24 @@ def deleteItemsView(request):
             
 
         return redirect("group", id=groupId, name=groupName)
+
+    return redirect("home")
+
+# Handles moving items to another group
+def moveItemsView(request):
+    if(not request.user.is_authenticated):
+        return redirect("login")
+
+    if(request.method=="POST"):
+        groupId = request.POST.get("groupId")
+        groupName = request.POST.get("groupName")
+        moveId = request.POST.get("moveGroups")
+        selectedItems = request.POST.getlist("selectedItems")
+
+        newGroup = Group.objects.get(pk=moveId)
+        Item.objects.filter(pk__in=selectedItems).update(group=newGroup)
+
+        return redirect("group", id=groupId, name=groupName)
+
 
     return redirect("home")

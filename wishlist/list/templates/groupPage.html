@@ -26,6 +26,15 @@
         <input type="hidden" value="{{ name }}" name="groupName">
 
         <input type="submit" value="Delete"/>
+        <label for="moveGroups">Move to: </label>
+        <select name="moveGroups">
+            {% for g in groups %}
+                {% if g.name != name %}
+                    <option value="{{ g.pk }}">{{ g.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <input type="submit" value="Move" formaction="{% url 'moveItems' %}"/>
         {% for i in items %}
             <div class="item">
                 <input type="checkbox" name="selectedItems" value="{{ i.id }}"><br/>

@@ -11,4 +11,5 @@ urlpatterns = [
     path("deleteGroup/", views.deleteGroupView, name="deleteGroup"),
     path("addItem/", views.addItemView, name="addItem"),
     path("deleteItems/", views.deleteItemsView, name="deleteItems"),
+    path("moveItems/", views.moveItemsView, name="moveItems"),
 ]
