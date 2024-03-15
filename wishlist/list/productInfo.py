@@ -271,7 +271,7 @@ def melonbooksScrape(html):
 
     return {"success" : True, "res" : res}
 
-def goodsmileScrape(html):
+def goodsmileshopScrape(html):
     soup = BeautifulSoup(html, "html.parser")
 
     # Check if product page
@@ -292,6 +292,35 @@ def goodsmileScrape(html):
 
     # Request Image
     imgURL = soup.find("meta", property="og:image")["content"].replace("http://ap-com.gsls", "https://goodsmileshop.com")
+    # img = "data:image/jpeg;base64," + base64.b64encode(requestURL(imgURL)["req"].content).decode("utf-8")
+    res["img"] = saveImage(res["name"], imgURL)
+
+    res["origin"] = "GoodSmile"
+
+    return {"success" : True, "res" : res}
+
+def goodsmileScrape(html):
+    soup = BeautifulSoup(html, "html.parser", parse_only=SoupStrainer("script"))
+
+    # Check if product page
+    info = soup.find("script", type="application/ld+json")
+    if(info is None):
+        return {"success" : False, "msg" : "Not a good smile product page"}
+
+    # Info
+    info = json.loads(info.get_text())
+    res={}
+    res["url"] = info["url"]
+    res["name"] = info["name"]
+    res["price"] = float(info["offers"]["price"])
+    res["currency"] = info["offers"]["priceCurrency"]
+    if("availability" in info["offers"]):
+        res["inStock"] = True
+    else:
+        res["inStock"] = False
+
+    # Request Image
+    imgURL = "https://www.goodsmile.com" + info["image"]
     # img = "data:image/jpeg;base64," + base64.b64encode(requestURL(imgURL)["req"].content).decode("utf-8")
     res["img"] = saveImage(res["name"], imgURL)
 
@@ -567,7 +596,8 @@ ORIGINS = {
     "omocat-shop" : omocatScrape,
     "store.crunchyroll" : crunchyrollScrape,
     "melonbooks" : melonbooksScrape,
-    "goodsmileshop" : goodsmileScrape,
+    "goodsmileshop" : goodsmileshopScrape,
+    "goodsmile" : goodsmileScrape,
     "hobby-genki" : hobbygenkiScrape,
     "solarisjapan" : solarisjapanScrape,
     "ecs.toranoana" : toranoanaScrape,

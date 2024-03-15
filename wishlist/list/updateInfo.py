@@ -199,7 +199,7 @@ def melonbooksScrape(html):
 
     return {"success" : True, "res" : res}
 
-def goodsmileScrape(html):
+def goodsmileshopScrape(html):
     soup = BeautifulSoup(html, "html.parser")
 
     # Check if product page
@@ -217,6 +217,29 @@ def goodsmileScrape(html):
         res["inStock"] = False
     else:
         res["inStock"] = True
+
+    res["origin"] = "GoodSmile"
+
+    return {"success" : True, "res" : res}
+
+def goodsmileScrape(html):
+    soup = BeautifulSoup(html, "html.parser", parse_only=SoupStrainer("script"))
+
+    # Check if product page
+    info = soup.find("script", type="application/ld+json")
+    if(info is None):
+        return {"success" : False, "msg" : "Not a good smile product page"}
+
+    # Info
+    info = json.loads(info.get_text())
+    res={}
+    res["url"] = info["url"]
+    res["price"] = float(info["offers"]["price"])
+    res["currency"] = info["offers"]["priceCurrency"]
+    if("availability" in info["offers"]):
+        res["inStock"] = True
+    else:
+        res["inStock"] = False
 
     res["origin"] = "GoodSmile"
 
@@ -436,7 +459,8 @@ ORIGINS = {
     "omocat-shop" : omocatScrape,
     "store.crunchyroll" : crunchyrollScrape,
     "melonbooks" : melonbooksScrape,
-    "goodsmileshop" : goodsmileScrape,
+    "goodsmileshop" : goodsmileshopScrape,
+    "goodsmile" : goodsmileScrape,
     "hobby-genki" : hobbygenkiScrape,
     "solarisjapan" : solarisjapanScrape,
     "ecs.toranoana" : toranoanaScrape,
