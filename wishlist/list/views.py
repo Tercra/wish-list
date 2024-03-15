@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Group, Item, ItemData
 from .forms import GroupForm
 from .productInfo import scrapeInfo
+from .updateInfo import updateInfo
 from django.conf import settings
 import os
 
@@ -108,9 +109,9 @@ def deleteGroupView(request):
 
     if(request.method=="POST"):
         try:
-            id = request.POST.get("groupId")
-            images = [x["imagePath"] for x in Item.objects.filter(group=id).values()]
-            g = Group.objects.get(pk = id)
+            groupId = request.POST.get("groupId")
+            images = [x["imagePath"] for x in Item.objects.filter(group=groupId).values()]
+            g = Group.objects.get(pk = groupId)
             g.delete()
 
             # Delete images of items that do not use that image path anymore (maybeChangeInProduction)
@@ -137,9 +138,7 @@ def addItemView(request):
             temp = temp["res"]
 
             item = Item.objects.create(user=request.user, group_id=groupId, name=temp["name"], imagePath=temp["img"])
-            # item.save()
-            itemData = ItemData(item=item, price=temp["price"], currency=temp["currency"], inStock=temp["inStock"], webLink=temp["url"], origin=temp["origin"])
-            itemData.save()
+            itemData = ItemData.objects.create(item=item, price=temp["price"], currency=temp["currency"], inStock=temp["inStock"], webLink=temp["url"], origin=temp["origin"])
         else:
             messages.error(request, temp["msg"])
 
@@ -188,5 +187,31 @@ def moveItemsView(request):
 
         return redirect("group", id=groupId, name=groupName)
 
+
+    return redirect("home")
+
+# Handles updating items
+def updateItemView(request):
+    if(not request.user.is_authenticated):
+        return redirect("login")
+
+    if(request.method == "POST"):
+        itemId = request.POST.get("itemId")
+        url = request.POST.get("itemURL")
+        temp = updateInfo(url)
+        if(temp["success"] == True):
+            temp = temp["res"]
+
+            item = Item.objects.get(pk=itemId)
+            relatedData = ItemData.objects.filter(item=item, origin=temp["origin"])
+            if(relatedData.exists()):
+                relatedData.update(webLink=temp["url"], price=temp["price"], currency=temp["currency"], inStock=temp["inStock"])
+            else:
+                ItemData.objects.create(item=item, price=temp["price"], currency=temp["currency"], inStock=temp["inStock"], webLink=temp["url"], origin=temp["origin"])
+
+        else:
+            messages.error(request, temp["msg"])
+
+        return redirect("itemPage", id=itemId)
 
     return redirect("home")

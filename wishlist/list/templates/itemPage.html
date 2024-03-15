@@ -17,4 +17,10 @@
             </tr>
         {% endfor %}
     </table>
+    <form method="POST" action="{% url 'updateItem' %}">
+        {% csrf_token %}
+        <input type="hidden" value="{{ id }}" name="itemId"/>
+        <input type="text" name="itemURL" placeholder="URL of item" autocomplete="off"/>
+        <input type="submit" value="Update item"/>
+    </form>
 </div>
