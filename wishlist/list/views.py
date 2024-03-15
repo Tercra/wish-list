@@ -16,12 +16,21 @@ import os
 
 # Create your views here.
 @login_required(login_url="/login")
-def home(request):
+def searchPage(request):
+    items = Item.objects.filter(user=request.user)
+
+    if(request.method == "POST"):
+        searchText = request.POST.get("searchText")
+        selectFilter = request.POST.get("selectFilter")
+        items = items.filter(name__icontains=searchText)
+        if(selectFilter != ""):
+            items = items.filter(idatas__origin=selectFilter)
+    
     groups = Group.objects.filter(user=request.user)
     gForm = GroupForm(initial={"user" : request.user})
 
-    template = loader.get_template("mainPage.html")
-    context = {"MEDIA_URL": settings.MEDIA_URL, "user" : request.user, "groups" : groups, "gForm" : gForm}
+    template = loader.get_template("searchPage.html")
+    context = {"MEDIA_URL": settings.MEDIA_URL, "user" : request.user, "groups" : groups, "gForm" : gForm, "items" : items}
     return HttpResponse(template.render(context=context, request=request))
 
 @login_required(login_url="/login")

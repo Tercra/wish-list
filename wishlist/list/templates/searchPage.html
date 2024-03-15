@@ -1,0 +1,47 @@
+{% include "mainPage.html" %}
+<h1>Search</h1>
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="searchText" placeholder="Search..." autocomplete="off"/>
+    <label for="selectFilter">Filter by Sites: </label>
+    <select name="selectFilter">
+        <optgroup label="All Rounder">
+            <option value="">All</option>
+            <option value="Ataikuji">Aitaikuji</option>
+            <option value="CDJapan">CDJapan</option>
+            <option value="Hobby Genki">Hobby Genki</option>
+            <option value="HobbyLink Japan">Hobby Link Japan</option>
+            <option value="Republic">Republic</option>
+            <option value="Solaris Japan">Solaris Japan</option>
+
+        </optgroup>
+        <optgroup label="Books/Digital">
+            <option value="BookWalker">Book☆Walker</option>
+            <option value="DLSite">DLSite</option>
+            <option value="Melonbooks">Melonbooks</option>
+            <option value="Surugaya">Surugaya</option>
+            <option value="Toranoana">Toranoana</option>
+
+        </optgroup>
+        <optgroup label="Artist">
+            <option value="Booth">Booth</option>
+            <option value="Etsy">Etsy</option>
+            <option value="Omocat">Omocat</option>
+
+        </optgroup>
+        <optgroup label="Figures">
+            <option value="Crunchyroll">Crunchyroll</option>
+            <option value="GoodSmile">Good Smile</option>
+            <option value="USA Gundam">USA Gundam</option>
+            
+        </optgroup>
+    </select>
+    <input type="submit" value="Search"/>
+</form>
+
+{% for i in items %}
+    <div class="item">
+        <img src="{{ MEDIA_URL }}{{ i.imagePath }}" />
+        <p><label for="selectedItems"><a href="{% url 'itemPage' i.id %}">{{ i.name }}</a></label></p>
+    </div>
+{% endfor %}
