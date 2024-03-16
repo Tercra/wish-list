@@ -224,3 +224,28 @@ def updateItemView(request):
         return redirect("itemPage", id=itemId)
 
     return redirect("home")
+
+# Handles Updating all the data an item has
+def updateItemDataView(request):
+    if(not request.user.is_authenticated):
+        return redirect("login")
+
+    if(request.method == "POST"):
+        itemId = request.POST.get("itemId")
+        itemDatas = ItemData.objects.filter(item__pk=itemId)
+        for i in itemDatas:
+            temp = updateInfo(i.webLink)
+            if(temp["success"] == True):
+                temp = temp["res"]
+                i.price = temp["price"]
+                i.currency = temp["currency"]
+                i.inStock = temp["inStock"]
+                i.webLink = temp["url"]
+            else:
+                messages.error(request, temp["msg"])
+
+        ItemData.objects.bulk_update(itemDatas, ["price", "currency", "inStock", "webLink"])
+
+        return redirect("itemPage", id=itemId)
+
+    return redirect("home")

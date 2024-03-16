@@ -2,6 +2,12 @@
 
 <div class="itemDetail">
     <h1>{{ item.name }}</h1>
+    <h2>Group: {{ item.group.name }}</h2>
+    <form method="POST" action="{% url 'updateItemData' %}">
+        {% csrf_token %}
+        <input type="hidden" value="{{ id }}" name="itemId"/>
+        <input type="submit" value="Update Data"/>
+    </form>
     <img src="{{ MEDIA_URL }}{{ item.imagePath }}"/>
     <table>
         <tr>
@@ -21,6 +27,6 @@
         {% csrf_token %}
         <input type="hidden" value="{{ id }}" name="itemId"/>
         <input type="text" name="itemURL" placeholder="URL of item" autocomplete="off"/>
-        <input type="submit" value="Add item link"/>
+        <input type="submit" value="Add/Update item link"/>
     </form>
 </div>
