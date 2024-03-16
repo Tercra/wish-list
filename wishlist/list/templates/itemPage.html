@@ -2,11 +2,14 @@
 
 <div class="itemDetail">
     <h1>{{ item.name }}</h1>
-    <h2>Group: {{ item.group.name }}</h2>
+    <h2>Group: <a href="{% url 'group' item.group.pk item.group.name %}">{{ item.group.name }}</a></h2>
     <form method="POST" action="{% url 'updateItemData' %}">
         {% csrf_token %}
+        <input type="hidden" value="{{ item.group.id }}" name="groupId">
+        <input type="hidden" value="{{ item.group.name }}" name="groupName">
         <input type="hidden" value="{{ id }}" name="itemId"/>
         <input type="submit" value="Update Data"/>
+        <input type="submit" value="Delete Item" formaction="{% url 'deleteItems' %}"/>
     </form>
     <img src="{{ MEDIA_URL }}{{ item.imagePath }}"/>
     <table>

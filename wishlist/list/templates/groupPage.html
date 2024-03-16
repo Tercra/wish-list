@@ -25,7 +25,7 @@
         <input type="hidden" value="{{ id }}" name="groupId">
         <input type="hidden" value="{{ name }}" name="groupName">
 
-        <input type="submit" value="Delete"/>
+        <input type="submit" value="Delete Item(s)"/>
         <label for="moveGroups">Move to: </label>
         <select name="moveGroups">
             {% for g in groups %}
@@ -37,7 +37,7 @@
         <input type="submit" value="Move" formaction="{% url 'moveItems' %}"/>
         {% for i in items %}
             <div class="item">
-                <input type="checkbox" name="selectedItems" value="{{ i.id }}"><br/>
+                <input type="checkbox" name="itemId" value="{{ i.id }}"><br/>
                 <img src="{{ MEDIA_URL }}{{ i.imagePath }}" />
                 <p><label for="selectedItems"><a href="{% url 'itemPage' i.id %}">{{ i.name }}</a></label></p>
             </div>

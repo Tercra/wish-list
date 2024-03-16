@@ -48,7 +48,7 @@ def groupView(request, id, name):
 def itemView(request, id):
     groups = Group.objects.filter(user=request.user)
     gForm = GroupForm(initial={"user" : request.user})
-    item = Item.objects.get(pk=id)
+    item = Item.objects.select_related("group").get(pk=id)
     itemDatas = ItemData.objects.filter(item__pk=id)
 
     template = loader.get_template("itemPage.html")
@@ -165,7 +165,7 @@ def deleteItemsView(request):
     if(request.method=="POST"):
         groupId = request.POST.get("groupId")
         groupName = request.POST.get("groupName")
-        selectedItems = request.POST.getlist("selectedItems")
+        selectedItems = request.POST.getlist("itemId")
         items = Item.objects.filter(pk__in=selectedItems)
         images = [x["imagePath"] for x in items.values()]
         items.delete()
@@ -190,7 +190,7 @@ def moveItemsView(request):
         groupId = request.POST.get("groupId")
         groupName = request.POST.get("groupName")
         moveId = request.POST.get("moveGroups")
-        selectedItems = request.POST.getlist("selectedItems")
+        selectedItems = request.POST.getlist("itemId")
 
         newGroup = Group.objects.get(pk=moveId)
         Item.objects.filter(pk__in=selectedItems).update(group=newGroup)
@@ -200,7 +200,7 @@ def moveItemsView(request):
 
     return redirect("home")
 
-# Handles updating items
+# Handles updating item when adding a link to the item
 def updateItemView(request):
     if(not request.user.is_authenticated):
         return redirect("login")
