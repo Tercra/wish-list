@@ -10,9 +10,10 @@ from django.contrib.auth.decorators import login_required
 from .models import Group, Item, ItemData
 from .forms import GroupForm
 from .productInfo import scrapeInfo
-from .updateInfo import updateInfo
+from .updateInfo import updateInfo, scrapeInfoDatas
 from django.conf import settings
 import os
+from asgiref.sync import async_to_sync
 
 # Create your views here.
 @login_required(login_url="/login")
@@ -233,14 +234,18 @@ def updateItemDataView(request):
     if(request.method == "POST"):
         itemId = request.POST.get("itemId")
         itemDatas = ItemData.objects.filter(item__pk=itemId)
-        for i in itemDatas:
-            temp = updateInfo(i.webLink)
-            if(temp["success"] == True):
-                temp = temp["res"]
-                i.price = temp["price"]
-                i.currency = temp["currency"]
-                i.inStock = temp["inStock"]
-                i.webLink = temp["url"]
+
+        sync_get_data = async_to_sync(scrapeInfoDatas)
+
+        itemDataUpdated = sync_get_data([item.webLink for item in itemDatas])
+
+        for index, (item, scrapeResult) in enumerate(zip(itemDatas, itemDataUpdated)):
+            if(scrapeResult["success"] == True):
+                temp = scrapeResult["res"]
+                item.price = temp["price"]
+                item.currency = temp["currency"]
+                item.inStock = temp["inStock"]
+                item.webLink = temp["url"]
             else:
                 messages.error(request, temp["msg"])
 

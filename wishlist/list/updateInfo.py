@@ -5,6 +5,12 @@ import base64
 import json
 import requests
 import re
+import aiohttp
+import asyncio
+import platform
+
+if platform.system()=='Windows':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 def requestURL(url):
     header = {"User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"}
@@ -498,6 +504,41 @@ def updateInfo(url):
     
     return {"success" : False, "msg" : info["msg"]}
     
+async def getUpdateInfo(session, url):
+    origin = extractOrigin(url)
+    if(origin == "N/A" or origin not in ORIGINS.keys()):
+        return {"success" : False, "msg" : "Not part of configured websites"}
+
+    # If we can't get the loaded html with just a request
+    if(origin in SCRAPEMETHODS.keys()):
+        reqResponse = SCRAPEMETHODS[origin](url)
+        info = ORIGINS[origin](reqResponse["req"])
+
+        if(info["success"]):
+            return {"success" : True, "res" : info["res"], "origin" : origin}
+    
+    # When we scrape normally
+    async with session.get(url) as resp:
+        if(resp.status == 404):
+            return {"success" : False, "msg" : "404 Status Code"}
+        
+        info = ORIGINS[origin](await resp.text())
+
+        if(info["success"]):
+            return {"success" : True, "res" : info["res"], "origin" : origin}
+        
+        return {"success" : False, "msg" : info["msg"]}
+
+async def scrapeInfoDatas(urlList):
+    header = {"User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"}
+    
+    async with aiohttp.ClientSession(headers=header, cookies={"AUTH_ADULT" : "1"}) as session:
+        tasks = []
+        for url in urlList:
+            tasks.append(asyncio.ensure_future(getUpdateInfo(session, url)))
+
+        itemInfos = await asyncio.gather(*tasks)
+        return itemInfos
 
 
 if __name__ == "__main__":
