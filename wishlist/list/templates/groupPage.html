@@ -1,6 +1,8 @@
-{% include "mainPage.html" %}
+{% extends 'mainPage.html' %}
 
-<div>
+{% block content %}
+
+<div class="content">
     <h1>{{ name }}</h1>
     <menu>
         <form method="POST" action="{% url 'deleteGroup' %}"><li>
@@ -15,7 +17,7 @@
         <input type="hidden" value="{{ id }}" name="groupId">
         <input type="hidden" value="{{ name }}" name="groupName">
         
-        <label for="url">URL: </label><br/>
+        <label for="url">URL: </label>
         <input type="text" name="url" placeholder="URL of the item you wish to add" autocomplete="off">
         <input type="submit" value="Add item">
     </form>
@@ -35,6 +37,8 @@
             {% endfor %}
         </select>
         <input type="submit" value="Move" formaction="{% url 'moveItems' %}"/>
+        
+        <div class="itemCollection">
         {% for i in items %}
             <div class="item">
                 <input type="checkbox" name="itemId" value="{{ i.id }}"><br/>
@@ -42,5 +46,7 @@
                 <p><label for="selectedItems"><a href="{% url 'itemPage' i.id %}">{{ i.name }}</a></label></p>
             </div>
         {% endfor %}
+        </div>
     </form>
 </div>
+{% endblock %}

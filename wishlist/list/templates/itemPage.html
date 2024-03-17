@@ -1,6 +1,7 @@
-{% include 'mainPage.html' %}
+{% extends 'mainPage.html' %}
 
-<div class="itemDetail">
+{% block content %}
+<div class="content">
     <h1>{{ item.name }}</h1>
     <h2>Group: <a href="{% url 'group' item.group.pk item.group.name %}">{{ item.group.name }}</a></h2>
     <form method="POST" action="{% url 'updateItemData' %}">
@@ -33,3 +34,4 @@
         <input type="submit" value="Add/Update item link"/>
     </form>
 </div>
+{% endblock %}

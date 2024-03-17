@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,12 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
 </head>
 <body>
     {% if messages %}
         <ul class="messages">
             {% for message in messages %}
-                {{ message }}
+                <li>{{ message }}</li>
             {% endfor %}
         </ul>
     {% endif %}
@@ -44,6 +46,9 @@
             </ul>
         </nav>
     </div>
+    
+    {% block content %}
+    {% endblock %}
 
 </body>
 </html>

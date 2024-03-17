@@ -1,0 +1,55 @@
+body {
+    display: grid;
+    grid-template-columns: clamp(250px, 15vw, 300px) auto;
+    margin: 0;
+}
+
+.messages {
+    background-color: rgb(253, 156, 189);
+    margin : 0;
+    padding: 1em;
+    padding-left: 2em;
+    grid-column: auto / span 2;
+}
+
+#sidebar {
+    grid-column: 1;
+    padding : 5px 10px;
+    min-height: 100vh;
+    overflow-wrap: anywhere;
+    background-color: red;
+}
+
+.content {
+    grid-column: 2;
+    padding: 0 15px;
+    padding-left: 2em;
+    overflow-wrap: anywhere;
+    background-color: greenyellow;
+}
+
+/* The css for the items */
+.item img {
+    width: 250px;
+    height: 250px;
+    object-fit:scale-down;
+}
+
+.item {
+    max-width: min-content;
+    padding: 5px 10px;
+    border-radius: 10px;
+    background-color: aqua;
+}
+
+.itemCollection{
+    margin-top: 1em;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat( auto-fill, minmax(280px, 1fr));
+}
+
+/* The FORM elements */
+select [name=moveGroups] {
+    width: 25ch;
+}
