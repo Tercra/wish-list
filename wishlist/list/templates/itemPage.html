@@ -12,26 +12,30 @@
         <input type="submit" value="Update Data"/>
         <input type="submit" value="Delete Item" formaction="{% url 'deleteItems' %}"/>
     </form>
-    <img src="{{ MEDIA_URL }}{{ item.imagePath }}"/>
-    <table>
-        <tr>
-            <th>Site</th><th>Price</th><th>Currency</th><th>In Stock</th><th>Link</th>
-        </tr>
-        {% for i in itemDatas %}
-            <tr>
-                <td>{{ i.origin }}</td>
-                <td>{{ i.price }}</td>
-                <td>{{ i.currency }}</td>
-                <td>{{ i.inStock }}</td>
-                <td><a class="tableLink" href="{{ i.webLink }}" target="_blank">Go-></a></td>
-            </tr>
-        {% endfor %}
-    </table>
-    <form method="POST" action="{% url 'updateItem' %}">
-        {% csrf_token %}
-        <input type="hidden" value="{{ id }}" name="itemId"/>
-        <input type="text" name="itemURL" placeholder="URL of item" autocomplete="off"/>
-        <input type="submit" value="Add/Update item link"/>
-    </form>
+    <div id="itemDetails">
+        <img src="{{ MEDIA_URL }}{{ item.imagePath }}"/>
+        <div>
+            <table>
+                <tr>
+                    <th>Site</th><th>Price</th><th>Currency</th><th>In Stock</th><th>Link</th>
+                </tr>
+                {% for i in itemDatas %}
+                    <tr>
+                        <td>{{ i.origin }}</td>
+                        <td>{{ i.price }}</td>
+                        <td>{{ i.currency }}</td>
+                        <td>{{ i.inStock }}</td>
+                        <td><a class="tableLink" href="{{ i.webLink }}" target="_blank">Go-></a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <form method="POST" action="{% url 'updateItem' %}">
+                {% csrf_token %}
+                <input type="hidden" value="{{ id }}" name="itemId"/>
+                <input type="text" name="itemURL" placeholder="URL of item" autocomplete="off"/>
+                <input type="submit" value="Add/Update item link"/>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

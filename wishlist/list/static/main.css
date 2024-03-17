@@ -12,23 +12,70 @@ body {
     grid-column: auto / span 2;
 }
 
+/* Side bar stuff */
 #sidebar {
     grid-column: 1;
     padding : 5px 10px;
     min-height: 100vh;
     overflow-wrap: anywhere;
-    background-color: red;
+    background-color: #BDDAFF;
 }
 
+#sidebar a, #sidebar label {
+    color: black;
+    font-size: 1.28em;
+    text-decoration: none;
+}
+
+.barSelect {
+    padding: .2em 0;
+}
+
+.barSelect:hover {
+    background-color: #75B1FF;
+}
+
+/* Content stuff */
 .content {
     grid-column: 2;
     padding: 0 15px;
     padding-left: 2em;
     overflow-wrap: anywhere;
-    background-color: greenyellow;
 }
 
-/* The css for the items */
+/* Content stuff for itemPage */
+#itemDetails {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+#itemDetails img {
+    grid-column: 1;
+    max-width: 80%;
+    object-fit:scale-down;
+    justify-self: center;
+}
+
+#itemDetails div {
+    grid-column: 2;
+}
+
+#itemDetails table {
+    width: 100%;
+    padding-right: 2em;
+}
+
+#itemDetails th, td  {
+    border-bottom: 1px solid #ddd;
+    padding: 1em 1em 0 1em;
+    text-align: end;
+}
+
+#itemDetails th  {
+    background-color: #ddd;
+}
+
+/* The css for the items in search and group page*/
 .item img {
     width: 250px;
     height: 250px;
@@ -39,17 +86,25 @@ body {
     max-width: min-content;
     padding: 5px 10px;
     border-radius: 10px;
-    background-color: aqua;
+    background-color: white;
 }
 
 .itemCollection{
-    margin-top: 1em;
+    margin-top: 2em;
     display: grid;
     gap: 10px;
     grid-template-columns: repeat( auto-fill, minmax(280px, 1fr));
+    justify-items: center;
+    background-color: lightgray;
+    padding: 10px;
+    border-radius: 10px;
 }
 
 /* The FORM elements */
-select [name=moveGroups] {
+.content select {
     width: 25ch;
+}
+
+.content form {
+    margin: 1em 0;
 }
