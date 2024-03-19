@@ -398,8 +398,13 @@ def bookwalkerScrape(html):
     info = json.loads(info.get_text())
     res = {}
     res["url"] = info["url"]
-    res["price"] = float(info["offers"][0]["price"])
-    res["currency"] = info["offers"][0]["priceCurrency"]
+    if(type(info["offers"]) is list):
+        res["price"] = float(info["offers"][0]["price"])
+        res["currency"] = info["offers"][0]["priceCurrency"]
+    else:
+        res["price"] = float(info["offers"]["price"])
+        res["currency"] = info["offers"]["priceCurrency"]
+
     res["inStock"] = True
 
     res["origin"] = "BookWalker"
@@ -477,6 +482,7 @@ ORIGINS = {
     "dlsite" : dlsiteScrape,
     "booth" : boothScrape,
     "global.bookwalker" : bookwalkerScrape,
+    "bookwalker" : bookwalkerScrape,
     "usagundamstore" : usagundamScrape,
     "suruga-ya" : surugayaScrape
 }

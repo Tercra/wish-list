@@ -523,12 +523,17 @@ def bookwalkerScrape(html):
     res = {}
     res["url"] = info["url"]
     res["name"] = info["name"]
-    res["price"] = float(info["offers"][0]["price"])
-    res["currency"] = info["offers"][0]["priceCurrency"]
+    if(type(info["offers"]) is list):
+        res["price"] = float(info["offers"][0]["price"])
+        res["currency"] = info["offers"][0]["priceCurrency"]
+    else:
+        res["price"] = float(info["offers"]["price"])
+        res["currency"] = info["offers"]["priceCurrency"]
+
     res["inStock"] = True
     # res["image"] = info["image"]
     soup = BeautifulSoup(html, "html.parser", parse_only=SoupStrainer("img"))
-    imgURL = soup.find("img", itemprop="image")["src"]
+    imgURL = info["image"]
     res["img"] = saveImage(res["name"], imgURL)
 
     res["origin"] = "BookWalker"
@@ -618,6 +623,7 @@ ORIGINS = {
     "dlsite" : dlsiteScrape,
     "booth" : boothScrape,
     "global.bookwalker" : bookwalkerScrape,
+    "bookwalker" : bookwalkerScrape,
     "usagundamstore" : usagundamScrape,
     "suruga-ya" : surugayaScrape
 }
