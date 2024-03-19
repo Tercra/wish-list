@@ -43,7 +43,15 @@ body {
     overflow-wrap: anywhere;
 }
 
-/* Content stuff for itemPage */
+.content form li {
+    list-style-type: none;
+    position: absolute;
+    right: 5em;
+}
+
+/* Content for group page specific */
+
+/* Content stuff for itemPage specific */
 #itemDetails {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -84,6 +92,8 @@ body {
 
 .item {
     max-width: min-content;
+    max-height: 380px;
+    overflow-y: hidden;
     padding: 5px 10px;
     border-radius: 10px;
     background-color: white;

@@ -194,7 +194,7 @@ def melonbooksScrape(html):
     if(res["url"].find("melonbooks.co.jp/detail/") < 0):
         return {"success" : False, "msg" : "Not a melonbook product page"}
 
-    res["price"] = float(soup.find("span", class_="yen").get_text().strip().removeprefix("¥"))
+    res["price"] = float(soup.find("span", class_="yen").get_text().strip().removeprefix("¥").replace(",", ""))
     res["currency"] = "JPY"
     if(soup.find("span", class_="state-instock").get_text() == "-"):
         res["inStock"] = False
@@ -435,8 +435,9 @@ def surugayaScrape(html):
         return {"success" : False, "msg" : "Not a surugaya product page"}
 
     # Info
-    info = info.get_text().strip()
-    info = json.loads(info[1:-1])
+    info = info.get_text()
+    info = json.loads(info)
+    info = info[0]
     res = {}
     res["url"] = info["url"]
     res["price"] = float(info["offers"][0]["price"])
@@ -459,6 +460,7 @@ ORIGINS = {
     "otakurepublic" : otakuRepublicScrape,
     "goodsrepublic" : otakuRepublicScrape,
     "japanese-snacks-republic" : otakuRepublicScrape,
+    "figurerepublic" : otakuRepublicScrape,
     "cdjapan" : cdJapanScrape,
     "aitaikuji" : aitaikujiScrape,
     "etsy" : etsyScrape,
@@ -497,7 +499,7 @@ def updateInfo(url):
 
             info = ORIGINS[origin](reqResponse["req"].text)
     except Exception as e:
-        return {"success" : False, "msg" : "Something went wrong in the scrape function: " + e}
+        return {"success" : False, "msg" : "Something went wrong in the scrape function: " + str(e)}
 
     if(info["success"]):
         return {"success" : True, "res" : info["res"], "origin" : origin}

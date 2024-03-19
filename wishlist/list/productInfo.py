@@ -81,8 +81,18 @@ def otakuRepublicScrape(html):
 
     # Scraping info from the meta tags
     res = {}
+    nameTemp = soup.find("meta", attrs={"name":"og:description"})
+    if(nameTemp is None):
+        nameTemp = soup.find("meta", property="og:description")
+    nameTemp = nameTemp["content"].split(",")
+
+    if(nameTemp[3].find("price") == -1):
+        nameTemp = (" ").join(nameTemp[3:])
+    else:
+        nameTemp = (" ").join(nameTemp[4:])
+
     res["url"] = soup.find("meta", property="og:url")["content"]
-    res["name"] = soup.find("meta", property="og:title")["content"]
+    res["name"] = nameTemp
     res["price"] = float(soup.find("meta", property="og:price:amount")["content"])
     res["currency"] = soup.find("meta", property="og:price:currency")["content"]
     if(soup.find("meta", property="og:availability")["content"] == "instock"):      #preorders are also listed as instock
@@ -255,7 +265,7 @@ def melonbooksScrape(html):
         return {"success" : False, "msg" : "Not a melonbook product page"}
 
     res["name"] = soup.find("h1", class_="page-header").get_text()
-    res["price"] = float(soup.find("span", class_="yen").get_text().strip().removeprefix("¥"))
+    res["price"] = float(soup.find("span", class_="yen").get_text().strip().removeprefix("¥").replace(",", ""))
     res["currency"] = "JPY"
     if(soup.find("span", class_="state-instock").get_text() == "-"):
         res["inStock"] = False
@@ -560,8 +570,9 @@ def surugayaScrape(html):
         return {"success" : False, "msg" : "Not a surugaya product page"}
 
     # Info
-    info = info.get_text().strip()
-    info = json.loads(info[1:-1])
+    info = info.get_text()
+    info = json.loads(info)
+    info = info[0]
     res = {}
     res["url"] = info["url"]
     res["name"] = info["name"]
@@ -590,6 +601,7 @@ ORIGINS = {
     "otakurepublic" : otakuRepublicScrape,
     "goodsrepublic" : otakuRepublicScrape,
     "japanese-snacks-republic" : otakuRepublicScrape,
+    "figurerepublic" : otakuRepublicScrape,
     "cdjapan" : cdJapanScrape,
     "aitaikuji" : aitaikujiScrape,
     "etsy" : etsyScrape,
@@ -628,7 +640,7 @@ def scrapeInfo(url):
 
             info = ORIGINS[origin](reqResponse["req"].text)
     except Exception as e:
-        return {"success" : False, "msg" : "Something went wrong in the scrape function: " + e}
+        return {"success" : False, "msg" : "Something went wrong in the scrape function: " + str(e)}
 
     if(info["success"]):
         return {"success" : True, "res" : info["res"]}
