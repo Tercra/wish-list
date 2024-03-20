@@ -1,11 +1,11 @@
-# Wish List Project
-A web application that allows users to add items/products using a url of a shopping website that is supported. The website keeps the compilation of items and allows users to see and organize what they want to buy in one place.
+# Wish List Project[^1]
+A web application that allows users to add items/products using a url of a shopping website that has been configured. The website keeps the compilation of items and allows users to see and organize what they want to buy in one place.
 
 This is a thread of short videos on how the site work. [Link](https://x.com/AstralCzzz/status/1770337003181076607?s=20)
 
 
 ## List of configured sites
-A list of sites that has been configured to scrape info of items from.
+A list of sites that has been configured to scrape info of items from. [^2]
 1. Republic
     * Otaku Republic
     * Goods Republic
@@ -46,3 +46,7 @@ A list of sites that has been configured to scrape info of items from.
       * asyncio
   * Website
     * Django
+
+
+[^1]: Has not been configured for production. If sent to production some things might need to change such as how images are handled.
+[^2]: I don't use half of these sites so I probably won't notice if a scrape doesn't work because the website has updated or changed after time passes.
