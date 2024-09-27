@@ -81,18 +81,27 @@ def otakuRepublicScrape(html):
 
     # Scraping info from the meta tags
     res = {}
-    nameTemp = soup.find("meta", attrs={"name":"og:description"})
-    if(nameTemp is None):
-        nameTemp = soup.find("meta", property="og:description")
-    nameTemp = nameTemp["content"].split(",")
-
-    if(nameTemp[3].find("price") == -1):
-        nameTemp = (" ").join(nameTemp[3:])
-    else:
-        nameTemp = (" ").join(nameTemp[4:])
 
     res["url"] = soup.find("meta", property="og:url")["content"]
-    res["name"] = nameTemp
+
+    # Descriptions are different for when they are doujins
+    if(res["url"].find("otakurepublic") == -1):
+        nameTemp = soup.find("meta", attrs={"name":"og:description"})
+        if(nameTemp is None):
+            nameTemp = soup.find("meta", property="og:description")
+        nameTemp = nameTemp["content"].split(",")
+
+        if(nameTemp[3].find("price") == -1):
+            nameTemp = (" ").join(nameTemp[3:])
+        else:
+            nameTemp = (" ").join(nameTemp[4:])
+
+        res["name"] = nameTemp
+
+    else:
+        res["name"] = soup.find("meta", property="og:title")["content"]
+    
+    
     res["price"] = float(soup.find("meta", property="og:price:amount")["content"])
     res["currency"] = soup.find("meta", property="og:price:currency")["content"]
     if(soup.find("meta", property="og:availability")["content"] == "instock"):      #preorders are also listed as instock
