@@ -3,6 +3,15 @@ A web application that allows users to add items/products using a url of a shopp
 
 This is a thread of short videos on how the site work. [Link](https://x.com/AstralCzzz/status/1770337003181076607?s=20)
 
+## Commands
+```
+   myworld/Scripts/activate
+   cd .\wishlist\
+   py manage.py runserver
+   cd ..
+   deactivate
+```
+
 
 ## List of configured sites
 A list of sites that has been configured to scrape info of items from. [^2]
